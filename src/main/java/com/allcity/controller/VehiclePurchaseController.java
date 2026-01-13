@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/vehicle-purchases")
-@CrossOrigin(origins = "http://localhost:59753") // Angular support
+@CrossOrigin(origins = {"http://localhost:59753","https://allcity-transport-erp.onrender.com"}) // Angular support
 public class VehiclePurchaseController {
 
     private final VehiclePurchaseService service;
