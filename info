@@ -1,0 +1,13 @@
+TODO:
+Booking entity
+Vehicle sale entity
+Vehicle entity(check and add if anything is missing)
+Driver
+
+
+create Repo for
+Booking
+Vehicle sale
+
+User - Booking  -> One To Many
+Driver - Vehicle -> One To One

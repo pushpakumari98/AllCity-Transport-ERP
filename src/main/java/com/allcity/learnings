@@ -1,0 +1,15 @@
+ Entity->Repository->Service->ServiceImpl->Controller(API endpoints)
+
+ @Autowired is a Spring annotation that automatically injects dependencies into a class.
+  It tells Spring: “Please give me an instance of this class so I can use it.
+
+ Controller -> The controller handles HTTP requests (like GET, POST).
+               Controller methods call service methods
+
+   Why @VehicleService?: It delegates business logic to the service layer. You don’t want to write logic in the controller.
+   Why @Autowired?: Spring injects the  service implementation so the controller can use its methods.
+
+
+  ServieImpl ->The service layer contains business logic.
+  Why @VehicleRepository?: It interacts with the database using JPA.
+  Why @Autowired?: Spring injects the repository so the service can perform DB operations like save(),findAll().
