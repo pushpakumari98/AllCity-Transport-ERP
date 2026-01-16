@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = {"http://localhost:59753","https://allcity-transport-erp.onrender.com"}) // You can restrict this if needed
+@CrossOrigin(origins = {"http://localhost:59753","https://allcity-transport-erp.onrender.com","https://allcity-transport-erp-frontend.onrender.com"}) // You can restrict this if needed
 public class VehicleSaleController {
 
     @Autowired

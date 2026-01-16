@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/drivers")
-@CrossOrigin(origins = {"http://localhost:59753","https://allcity-transport-erp.onrender.com"})
+@CrossOrigin(origins = {"http://localhost:59753","https://allcity-transport-erp.onrender.com","https://allcity-transport-erp-frontend.onrender.com"})
 public class DriverController {
 
     private final DriverService driverService;

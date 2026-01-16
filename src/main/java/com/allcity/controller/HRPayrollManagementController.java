@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/hr")
-@CrossOrigin(origins = {"http://localhost:59753","https://allcity-transport-erp.onrender.com"})
+@CrossOrigin(origins = {"http://localhost:59753","https://allcity-transport-erp.onrender.com","https://allcity-transport-erp-frontend.onrender.com"})
 public class HRPayrollManagementController {
 
     private final LeaveTypeService leaveTypeService;

@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin(origins = {"http://localhost:59753","https://allcity-transport-erp.onrender.com"})
+@CrossOrigin(origins = {"http://localhost:59753","https://allcity-transport-erp.onrender.com","https://allcity-transport-erp-frontend.onrender.com"})
 @RestController
 @RequestMapping("/api/bookings")
 public class VehicleBookingController {
