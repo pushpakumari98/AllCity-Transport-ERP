@@ -34,9 +34,9 @@ public class SecurityFilter {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults())
-
+//                .csrf(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults())   // ✅ ENABLE CORS
+                .csrf(csrf -> csrf.disable())
                 .sessionManagement(sess ->
                         sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
@@ -49,6 +49,7 @@ public class SecurityFilter {
                                 "/api/vehicles/**",
                                 "/api/admin/**",
                                  "/api/events/create**",
+                                 "/api/**",
                                  "/images/**"
 
                 ).permitAll()
