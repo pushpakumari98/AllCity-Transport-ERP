@@ -69,11 +69,11 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-        if (request.getRole() == Role.USER) {
-            if (request.getDepartmentId() == null) {
-                throw new RuntimeException("Department is required for USER");
-            }
-        }
+//        if (request.getRole() == Role.USER) {
+//            if (request.getDepartmentId() == null) {
+//                throw new RuntimeException("Department is required for USER");
+//            }
+//        }
 
         User user = User.builder()
                 .email(request.getEmail())

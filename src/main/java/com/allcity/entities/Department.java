@@ -9,7 +9,9 @@ import java.util.List;
 
 @Entity
 @Table(name="departments")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor @AllArgsConstructor
 public class Department {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

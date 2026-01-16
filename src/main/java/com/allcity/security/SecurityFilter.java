@@ -48,6 +48,7 @@ public class SecurityFilter {
                         .requestMatchers("/api/bookings/**",
                                 "/api/vehicles/**",
                                 "/api/admin/**",
+                                 "/api/events/create**",
                                  "/images/**"
 
                 ).permitAll()
