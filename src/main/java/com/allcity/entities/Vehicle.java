@@ -71,6 +71,4 @@ public class Vehicle {
     private VehicleStatus vehicleStatus;
 
 
-
-
 }

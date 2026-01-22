@@ -35,6 +35,28 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     // ================= ADD VEHICLE =================
+//    @Override
+//    public Response addVehicle(VehicleDTO dto) {
+//
+//        Vehicle vehicle = new Vehicle();
+//
+//        vehicle.setVehicleRegNo(dto.getVehicleRegNo());
+//        vehicle.setVehicleType(dto.getVehicleType());
+//        vehicle.setPermitLevel(dto.getPermitLevel());
+//        vehicle.setDriverMob(dto.getDriverMob());
+//        vehicle.setPrice(dto.getPrice());
+//        vehicle.setCapacity(dto.getCapacity());
+//        vehicle.setOriginCity(dto.getOriginCity());
+//        vehicle.setDestinationCity(dto.getDestinationCity());
+//        vehicle.setDescription(dto.getDescription());
+//        vehicle.setVehicleStatus(dto.getVehicleStatus());
+//
+//        vehicleRepository.save(vehicle);
+//
+//        return new Response("Vehicle added successfully");
+//    }
+
+
     @Override
     public Response addVehicle(VehicleDTO dto) {
 
@@ -49,7 +71,13 @@ public class VehicleServiceImpl implements VehicleService {
         vehicle.setOriginCity(dto.getOriginCity());
         vehicle.setDestinationCity(dto.getDestinationCity());
         vehicle.setDescription(dto.getDescription());
-        vehicle.setVehicleStatus(dto.getVehicleStatus());
+
+        // ✅ IMPORTANT FIX
+        vehicle.setVehicleStatus(
+                dto.getVehicleStatus() != null
+                        ? dto.getVehicleStatus()
+                        : VehicleStatus.AVAILABLE
+        );
 
         vehicleRepository.save(vehicle);
 
@@ -60,6 +88,7 @@ public class VehicleServiceImpl implements VehicleService {
     // ================= UPDATE VEHICLE =================
     @Override
     public Response updateVehicle(Long id, VehicleDTO dto) {
+
         Vehicle existing = vehicleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Vehicle not found"));
 
@@ -73,10 +102,14 @@ public class VehicleServiceImpl implements VehicleService {
         existing.setDestinationCity(dto.getDestinationCity());
         existing.setDescription(dto.getDescription());
 
+        // 🔥 THIS LINE UPDATES STATUS
+        existing.setVehicleStatus(dto.getVehicleStatus());
+
         vehicleRepository.save(existing);
 
         return new Response("Vehicle updated successfully");
     }
+
 
     // ================= GET ALL VEHICLES =================
     @Override

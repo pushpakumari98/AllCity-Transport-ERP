@@ -46,19 +46,15 @@ public class VehicleController {
 
 
     // ================= UPDATE VEHICLE =================
-    @PutMapping("/update/{id}")
+    @PutMapping(value = "/update/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Response> updateVehicle(
             @PathVariable Long id,
-            @Valid @RequestBody VehicleDTO dto,
-            BindingResult result
+            @RequestBody VehicleDTO dto
     ) {
-        if (result.hasErrors()) {
-            return ResponseEntity.badRequest()
-                    .body(new Response(result.getFieldError().getDefaultMessage()));
-        }
-
         return ResponseEntity.ok(vehicleService.updateVehicle(id, dto));
     }
+
 
     // ================= GET AVAILABLE VEHICLES =================
     @GetMapping("/available")

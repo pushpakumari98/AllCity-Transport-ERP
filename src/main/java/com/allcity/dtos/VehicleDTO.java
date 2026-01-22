@@ -3,10 +3,7 @@ import com.allcity.enums.PermitLevel;
 import com.allcity.enums.VehicleStatus;
 import com.allcity.enums.VehicleType;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,8 +17,12 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class VehicleDTO {
+
+
+    @NotBlank(message = "Vehicle registration number is required")
     @Size(min = 4, message = "Vehicle Number must be at least 4 characters")
     private String vehicleRegNo;
+
 
     @Enumerated(EnumType.STRING)
     private PermitLevel permitLevel;
@@ -40,7 +41,6 @@ public class VehicleDTO {
     private Integer capacity;
 
     private String description; //additional data for the vehicle
-
 
 
     private String originCity;
