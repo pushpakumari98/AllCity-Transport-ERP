@@ -49,7 +49,7 @@ public class VehicleServiceImpl implements VehicleService {
         vehicle.setOriginCity(dto.getOriginCity());
         vehicle.setDestinationCity(dto.getDestinationCity());
         vehicle.setDescription(dto.getDescription());
-        vehicle.setVehicleStatus(dto.getVehicleStatus());
+        vehicle.setVehicleStatus(VehicleStatus.AVAILABLE);
 
         vehicleRepository.save(vehicle);
 
