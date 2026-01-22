@@ -15,7 +15,6 @@ import java.util.List;
 @CrossOrigin(origins = {"http://localhost:59753","https://allcity-transport-erp.onrender.com","https://allcity-transport-erp-frontend.onrender.com"})
 @RequiredArgsConstructor
 public class EventController {
-
     private final EventService service;
 
     // ================= CREATE EVENT (ADMIN ONLY) =================

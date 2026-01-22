@@ -10,22 +10,11 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class VehicleServiceImpl implements VehicleService {
-
-    // ✅ ABSOLUTE IMAGE DIRECTORY (FIXED)
-    private static final String IMAGE_DIRECTORY_BACKEND =
-            System.getProperty("user.dir")
-                    + File.separator + "uploads"
-                    + File.separator + "images"
-                    + File.separator;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -35,25 +24,24 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public List<String> getAllOriginCity() {
-        return List.of();
+        // Example: fetch distinct origin cities from DB
+        return vehicleRepository.findDistinctOriginCities();
     }
 
     @Override
     public List<String> getAllDestinationCity() {
-        return List.of();
+        // Example: fetch distinct destination cities from DB
+        return vehicleRepository.findDistinctDestinationCities();
     }
 
-    // ================= ADD / UPDATE VEHICLE =================
+    // ================= ADD VEHICLE =================
     @Override
-    public Response addVehicle(VehicleDTO dto, MultipartFile imageFile) {
+    public Response addVehicle(VehicleDTO dto) {
 
         Vehicle vehicle = new Vehicle();
 
-        // ✅ REQUIRED FIELDS (VALIDATION DEPENDS ON THESE)
         vehicle.setVehicleRegNo(dto.getVehicleRegNo());
         vehicle.setVehicleType(dto.getVehicleType());
-
-        // ✅ OTHER FIELDS
         vehicle.setPermitLevel(dto.getPermitLevel());
         vehicle.setDriverMob(dto.getDriverMob());
         vehicle.setPrice(dto.getPrice());
@@ -61,53 +49,34 @@ public class VehicleServiceImpl implements VehicleService {
         vehicle.setOriginCity(dto.getOriginCity());
         vehicle.setDestinationCity(dto.getDestinationCity());
         vehicle.setDescription(dto.getDescription());
-        vehicle.setVehicleStatus(dto.getVehicleStatus());
+        vehicle.setVehicleStatus(VehicleStatus.AVAILABLE);
 
-        // ✅ IMAGE
-        if (imageFile != null && !imageFile.isEmpty()) {
-            try {
-                vehicle.setImage(imageFile.getBytes());
-            } catch (IOException e) {
-                throw new RuntimeException("Image upload failed");
-            }
-        }
+        vehicleRepository.save(vehicle);
 
-        vehicleRepository.save(vehicle); // ✅ save ONLY AFTER setting everything
         return new Response("Vehicle added successfully");
     }
 
 
+    // ================= UPDATE VEHICLE =================
     @Override
-    public Response updateVehicle(Vehicle vehicle, MultipartFile imageFile) {
-
-        Vehicle existing = vehicleRepository.findById(vehicle.getId())
+    public Response updateVehicle(Long id, VehicleDTO dto) {
+        Vehicle existing = vehicleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Vehicle not found"));
 
-        existing.setVehicleRegNo(vehicle.getVehicleRegNo());
-        existing.setPermitLevel(vehicle.getPermitLevel());
-        existing.setDriverMob(vehicle.getDriverMob());
-        existing.setVehicleType(vehicle.getVehicleType());
-        existing.setPrice(vehicle.getPrice());
-        existing.setCapacity(vehicle.getCapacity());
-        existing.setOriginCity(vehicle.getOriginCity());
-        existing.setDestinationCity(vehicle.getDestinationCity());
-        existing.setDescription(vehicle.getDescription());
-        existing.setVehicleStatus(vehicle.getVehicleStatus());
-
-        // 🔥 CRITICAL FIX
-        if (imageFile != null && !imageFile.isEmpty()) {
-            try {
-                existing.setImage(imageFile.getBytes());
-            } catch (IOException e) {
-                throw new RuntimeException("Image upload failed");
-            }
-        }
-        // ❌ DO NOT touch image if no file uploaded
+        existing.setVehicleRegNo(dto.getVehicleRegNo());
+        existing.setVehicleType(dto.getVehicleType());
+        existing.setPermitLevel(dto.getPermitLevel());
+        existing.setDriverMob(dto.getDriverMob());
+        existing.setPrice(dto.getPrice());
+        existing.setCapacity(dto.getCapacity());
+        existing.setOriginCity(dto.getOriginCity());
+        existing.setDestinationCity(dto.getDestinationCity());
+        existing.setDescription(dto.getDescription());
 
         vehicleRepository.save(existing);
+
         return new Response("Vehicle updated successfully");
     }
-
 
     // ================= GET ALL VEHICLES =================
     @Override
@@ -118,9 +87,7 @@ public class VehicleServiceImpl implements VehicleService {
     // ================= GET AVAILABLE VEHICLES =================
     @Override
     public Response getAvailableVehicles() {
-
-        List<Vehicle> vehicles =
-                vehicleRepository.findByVehicleStatus(VehicleStatus.AVAILABLE);
+        List<Vehicle> vehicles = vehicleRepository.findByVehicleStatus(VehicleStatus.AVAILABLE);
 
         List<VehicleDTO> vehicleDTOList = modelMapper.map(
                 vehicles,
@@ -143,7 +110,6 @@ public class VehicleServiceImpl implements VehicleService {
     // ================= DELETE VEHICLE =================
     @Override
     public Response deleteVehicle(Long id) {
-
         Vehicle vehicle = vehicleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Vehicle not found"));
 
@@ -153,41 +119,5 @@ public class VehicleServiceImpl implements VehicleService {
                 .status(200)
                 .message("Vehicle deleted successfully")
                 .build();
-    }
-
-    // ================= IMAGE SAVE METHOD (FINAL FIX) =================
-    private String saveImage(MultipartFile imageFile) {
-
-        if (imageFile == null || imageFile.isEmpty()) {
-            return null;
-        }
-
-        if (!imageFile.getContentType().startsWith("image/")) {
-            throw new IllegalArgumentException("Only image files are allowed");
-        }
-
-        File directory = new File(IMAGE_DIRECTORY_BACKEND);
-
-        if (!directory.exists()) {
-            boolean created = directory.mkdirs();
-            if (!created) {
-                throw new RuntimeException(
-                        "Failed to create directory: " + IMAGE_DIRECTORY_BACKEND);
-            }
-        }
-
-        String uniqueFileName =
-                UUID.randomUUID() + "_" + imageFile.getOriginalFilename();
-
-        File destination = new File(directory, uniqueFileName);
-
-        try {
-            imageFile.transferTo(destination);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to save image: " + e.getMessage());
-        }
-
-        // ✅ Return URL path (served via WebConfig)
-        return "/images/" + uniqueFileName;
     }
 }
