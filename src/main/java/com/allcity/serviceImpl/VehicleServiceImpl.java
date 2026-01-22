@@ -35,26 +35,6 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     // ================= ADD VEHICLE =================
-//    @Override
-//    public Response addVehicle(VehicleDTO dto) {
-//
-//        Vehicle vehicle = new Vehicle();
-//
-//        vehicle.setVehicleRegNo(dto.getVehicleRegNo());
-//        vehicle.setVehicleType(dto.getVehicleType());
-//        vehicle.setPermitLevel(dto.getPermitLevel());
-//        vehicle.setDriverMob(dto.getDriverMob());
-//        vehicle.setPrice(dto.getPrice());
-//        vehicle.setCapacity(dto.getCapacity());
-//        vehicle.setOriginCity(dto.getOriginCity());
-//        vehicle.setDestinationCity(dto.getDestinationCity());
-//        vehicle.setDescription(dto.getDescription());
-//        vehicle.setVehicleStatus(dto.getVehicleStatus());
-//
-//        vehicleRepository.save(vehicle);
-//
-//        return new Response("Vehicle added successfully");
-//    }
 
 
     @Override

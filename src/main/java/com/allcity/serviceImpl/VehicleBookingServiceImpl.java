@@ -26,25 +26,35 @@ public class VehicleBookingServiceImpl implements VehicleBookingService {
     @Autowired
     private VehicleRepository vehicleRepository;
 
+    @Override
+    @Transactional
     public VehicleBooking addBooking(VehicleBookingDTO dto) {
 
         Vehicle vehicle = vehicleRepository.findById(dto.getVehicleId())
                 .orElseThrow(() -> new RuntimeException("Vehicle not found"));
 
+        // 🚫 Block booking if vehicle is not AVAILABLE
+        if (vehicle.getVehicleStatus() != VehicleStatus.AVAILABLE) {
+            throw new RuntimeException("Vehicle is not available for booking");
+        }
+
         VehicleBooking booking = VehicleBooking.builder()
                 .vehicle(vehicle)
-                .vehicleNo(dto.getVehicleNo())
+                .vehicleNo(vehicle.getVehicleRegNo()) // auto from vehicle
                 .startedFrom(dto.getStartedFrom())
                 .destination(dto.getDestination())
-                .vehicleType(dto.getVehicleType())
+                .vehicleType(vehicle.getVehicleType())
                 .driverName(dto.getDriverName())
                 .bookingHire(dto.getBookingHire())
                 .bookingAdvance(dto.getBookingAdvance())
                 .bookingBalance(dto.getBookingBalance())
                 .bookingDate(LocalDate.now())
                 .bookingStatus(BookingStatus.PENDING)
-
                 .build();
+
+        // 🔒 Mark vehicle as BOOKED
+        vehicle.setVehicleStatus(VehicleStatus.COMPLETED);
+        vehicleRepository.save(vehicle);
 
         return vehicleBookingRepository.save(booking);
     }
@@ -74,11 +84,17 @@ public class VehicleBookingServiceImpl implements VehicleBookingService {
 
     @Override
     public void deleteBooking(Long id) {
-        if (!vehicleBookingRepository.existsById(id)) {
-            throw new RuntimeException("Booking not found with ID: " + id);
-        }
+
+        VehicleBooking booking = vehicleBookingRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        Vehicle vehicle = booking.getVehicle();
+        vehicle.setVehicleStatus(VehicleStatus.AVAILABLE);
+
+        vehicleRepository.save(vehicle);
         vehicleBookingRepository.deleteById(id);
     }
+
 
     @Override
     public List<VehicleBooking> getAllBookings() {
@@ -113,13 +129,18 @@ public class VehicleBookingServiceImpl implements VehicleBookingService {
     @Transactional
     @Override
     public void updateStatusBasedOnPod(Long id, String podFilePath) {
+
         VehicleBooking booking = vehicleBookingRepository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("Booking not found with ID: " + id));
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
 
         booking.setPodDocument(podFilePath);
-
         booking.setBookingStatus(BookingStatus.COMPLETED);
 
+        // 🔓 Make vehicle available again
+        Vehicle vehicle = booking.getVehicle();
+        vehicle.setVehicleStatus(VehicleStatus.AVAILABLE);
+
+        vehicleRepository.save(vehicle);
     }
+
 }

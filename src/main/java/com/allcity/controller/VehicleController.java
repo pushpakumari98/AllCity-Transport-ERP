@@ -4,6 +4,7 @@ import com.allcity.dtos.Response;
 import com.allcity.dtos.VehicleDTO;
 import com.allcity.entities.Vehicle;
 import com.allcity.enums.VehicleStatus;
+import com.allcity.repositories.VehicleRepository;
 import com.allcity.service.VehicleService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,12 @@ public class VehicleController {
     @Autowired
     private VehicleService vehicleService;
 
+    @Autowired
+    private VehicleRepository vehicleRepository;
+
 
     @PostMapping("/add-vehicle")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Response> addVehicle(
             @Valid @RequestBody VehicleDTO vehicleDTO,
             BindingResult result
@@ -59,9 +64,12 @@ public class VehicleController {
     // ================= GET AVAILABLE VEHICLES =================
     @GetMapping("/available")
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','USER')")
-    public ResponseEntity<Response> getAvailableVehicles() {
-        return ResponseEntity.ok(vehicleService.getAvailableVehicles());
+    public ResponseEntity<List<Vehicle>> getAvailableVehicles() {
+        return ResponseEntity.ok(
+                vehicleRepository.findByVehicleStatus(VehicleStatus.AVAILABLE)
+        );
     }
+
 
     // ================= GET ALL VEHICLES =================
     @GetMapping("/all")
