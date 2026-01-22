@@ -29,6 +29,7 @@ public class VehicleController {
 
 
     @PostMapping("/add-vehicle")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Response> addVehicle(
             @Valid @RequestBody VehicleDTO vehicleDTO,
             BindingResult result
