@@ -60,6 +60,7 @@ public class VehicleServiceImpl implements VehicleService {
     // ================= UPDATE VEHICLE =================
     @Override
     public Response updateVehicle(Long id, VehicleDTO dto) {
+
         Vehicle existing = vehicleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Vehicle not found"));
 
@@ -73,10 +74,14 @@ public class VehicleServiceImpl implements VehicleService {
         existing.setDestinationCity(dto.getDestinationCity());
         existing.setDescription(dto.getDescription());
 
+        // 🔥 THIS LINE UPDATES STATUS
+        existing.setVehicleStatus(dto.getVehicleStatus());
+
         vehicleRepository.save(existing);
 
         return new Response("Vehicle updated successfully");
     }
+
 
     // ================= GET ALL VEHICLES =================
     @Override
