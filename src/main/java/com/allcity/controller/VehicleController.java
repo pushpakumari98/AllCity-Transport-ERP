@@ -27,12 +27,7 @@ public class VehicleController {
     @Autowired
     private VehicleService vehicleService;
 
-    // ================= ADD VEHICLE =================
 
-<<<<<<<<< Temporary merge branch 1
-
-=========
->>>>>>>>> Temporary merge branch 2
     @PostMapping("/add-vehicle")
     public ResponseEntity<Response> addVehicle(
             @Valid @RequestBody VehicleDTO vehicleDTO,
