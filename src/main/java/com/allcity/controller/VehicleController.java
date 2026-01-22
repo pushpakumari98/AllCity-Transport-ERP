@@ -10,52 +10,37 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/vehicles")
-@CrossOrigin(origins = {
-        "http://localhost:59753",
-        "https://allcity-transport-erp.onrender.com",
-        "https://allcity-transport-erp-frontend.onrender.com"
-})
+@CrossOrigin(origins = {"http://localhost:59753","https://allcity-transport-erp.onrender.com","https://allcity-transport-erp-frontend.onrender.com"})
 public class VehicleController {
 
     @Autowired
     private VehicleService vehicleService;
 
     // ================= ADD VEHICLE =================
-
     @PostMapping("/add-vehicle")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Response> addVehicle(
-            @Valid @RequestBody VehicleDTO vehicleDTO,
-            BindingResult result
+            @Valid @RequestBody VehicleDTO vehicleDTO
     ) {
-        if (result.hasErrors()) {
-            return ResponseEntity.badRequest()
-                    .body(new Response(result.getFieldError().getDefaultMessage()));
-        }
-
         return ResponseEntity.ok(vehicleService.addVehicle(vehicleDTO));
     }
 
 
     // ================= UPDATE VEHICLE =================
     @PutMapping("/update/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Response> updateVehicle(
             @PathVariable Long id,
-            @Valid @RequestBody VehicleDTO dto,
-            BindingResult result
+            @Valid @RequestBody VehicleDTO vehicleDTO
     ) {
-        if (result.hasErrors()) {
-            return ResponseEntity.badRequest()
-                    .body(new Response(result.getFieldError().getDefaultMessage()));
-        }
-
-        return ResponseEntity.ok(vehicleService.updateVehicle(id, dto));
+        return ResponseEntity.ok(vehicleService.updateVehicle(id, vehicleDTO));
     }
 
     // ================= GET AVAILABLE VEHICLES =================
@@ -76,8 +61,7 @@ public class VehicleController {
     @GetMapping("/status/{status}")
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
     public ResponseEntity<List<Vehicle>> getVehiclesByStatus(
-            @PathVariable VehicleStatus status
-    ) {
+            @PathVariable VehicleStatus status) {
         return ResponseEntity.ok(vehicleService.getVehiclesByStatus(status));
     }
 
