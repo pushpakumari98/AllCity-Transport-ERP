@@ -59,6 +59,7 @@ public class VehiclePurchaseServiceImpl implements VehiclePurchaseService {
                 .collect(Collectors.toList());
     }
 
+
     // ✅ Update
     @Override
     public VehiclePurchaseDTO update(Long id, VehiclePurchaseDTO dto) {
@@ -81,21 +82,22 @@ public class VehiclePurchaseServiceImpl implements VehiclePurchaseService {
         return convertToDTO(repo.save(entity));
     }
 
-    // ✅ Delete
+
+
+
     @Override
-    public void delete(Long id) {
-        if (!repo.existsById(id)) {
-            throw new RuntimeException("Vehicle Purchase not found with ID: " + id);
-        }
+    public void deleteById(Long id) {
         repo.deleteById(id);
     }
+
+
 
     // 🔁 Entity → DTO
     private VehiclePurchaseDTO convertToDTO(VehiclePurchase entity) {
 
         VehiclePurchaseDTO dto = new VehiclePurchaseDTO();
 
-        dto.setSlNo(entity.getSlNo()); // sl.no
+        dto.setId(entity.getId());
         dto.setDate(entity.getDate());
         dto.setVehicleNo(entity.getVehicleNo());
         dto.setBookingHire(entity.getBookingHire());

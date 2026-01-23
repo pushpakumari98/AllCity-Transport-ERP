@@ -1,7 +1,10 @@
 package com.allcity.controller;
 
 import com.allcity.dtos.VehiclePurchaseDTO;
+import com.allcity.entities.VehiclePurchase;
 import com.allcity.service.VehiclePurchaseService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,46 +16,55 @@ import java.util.List;
 @CrossOrigin(origins = {"http://localhost:59753","https://allcity-transport-erp.onrender.com","https://allcity-transport-erp-frontend.onrender.com"}) // Angular support
 public class VehiclePurchaseController {
 
-    private final VehiclePurchaseService service;
+    private final VehiclePurchaseService vehiclePurchaseService;
 
-    public VehiclePurchaseController(VehiclePurchaseService service) {
-        this.service = service;
+    @Autowired
+    public VehiclePurchaseController(VehiclePurchaseService vehiclePurchaseService) {
+        this.vehiclePurchaseService = vehiclePurchaseService;
     }
+
 
     // ✅ Create Vehicle Purchase
     @PostMapping
     public ResponseEntity<VehiclePurchaseDTO> create(
-            @RequestBody VehiclePurchaseDTO dto) {
-        VehiclePurchaseDTO saved = service.save(dto);
+            @Valid @RequestBody VehiclePurchaseDTO dto)
+    {
+        VehiclePurchaseDTO saved = vehiclePurchaseService.save(dto);
         return new ResponseEntity<>(saved, HttpStatus.CREATED);
     }
 
     // ✅ Get by Sl. No (ID)
     @GetMapping("/{id}")
-    public ResponseEntity<VehiclePurchaseDTO> getById(
-            @PathVariable Long id) {
-        return ResponseEntity.ok(service.getById(id));
+    public ResponseEntity<VehiclePurchaseDTO> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(vehiclePurchaseService.getById(id));
     }
+
+
+
 
     // ✅ Get All Records
     @GetMapping
     public ResponseEntity<List<VehiclePurchaseDTO>> getAll() {
-        return ResponseEntity.ok(service.getAll());
+        return ResponseEntity.ok(vehiclePurchaseService.getAll());
     }
 
-    // ✅ Update Record
-    @PutMapping("/{id}")
-    public ResponseEntity<VehiclePurchaseDTO> update(
+
+    // ✅ UPDATE
+    @PutMapping("{id}")
+    public ResponseEntity<VehiclePurchaseDTO> updatePurchase(
             @PathVariable Long id,
             @RequestBody VehiclePurchaseDTO dto) {
-        return ResponseEntity.ok(service.update(id, dto));
+
+        return ResponseEntity.ok(vehiclePurchaseService.update(id, dto));
     }
+
 
     // ✅ Delete Record
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(
-            @PathVariable Long id) {
-        service.delete(id);
-        return ResponseEntity.ok("Vehicle purchase deleted successfully");
+    public ResponseEntity<Void> deletePurchase(@PathVariable Long id) {
+        vehiclePurchaseService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
+
+
 }

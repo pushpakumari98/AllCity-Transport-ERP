@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import java.time.LocalDate;
-import java.util.UUID;
+
 
 @Entity
 @Data
@@ -15,24 +15,30 @@ public class VehiclePurchase {
     // Sl. No (Auto-generated numeric)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long SlNo;
+    @Column(name = "sl_no")
+    private Long id;
 
     // Date
-    @Column(name = "entry_date", nullable = false)
+    @Column(name = "entry_date")
     private LocalDate date;
 
-    @Column(name="vehicleNo",nullable = false)
+
+    @Column(name="vehicle_no")
     @Pattern(
-            regexp = "^[A-Z]{2}[- ]?[0-9]{1,2}[- ]?[A-Z]{1,2}[- ]?[0-9]{4}$",
-            message = "Invalid vehicle number format"
+            regexp = "^[A-Z]{2}[0-9]{2}[A-Z]{2}[0-9]{4}$",
+            message = "Vehicle number must be like MH12AB1234"
     )
     @Size(min = 9, max = 13, message = "Vehicle number must be 9 to 13 characters")
     private String vehicleNo;
 
 
+
+
+
     // Booking Hire
     @Column(name = "booking_hire")
     private Double bookingHire;
+
 
     // Booking Receiving Balance Date
     @Column(name = "booking_receiving_balance_date")
