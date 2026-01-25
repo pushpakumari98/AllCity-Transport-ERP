@@ -60,13 +60,12 @@ public class VehiclePurchaseController {
         return ResponseEntity.ok(vehiclePurchaseService.update(id, dto));
     }
 
-
     // ✅ Delete Record
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePurchase(@PathVariable Long id) {
         vehiclePurchaseService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
-
 
 }
