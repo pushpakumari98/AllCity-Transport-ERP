@@ -24,10 +24,9 @@ public class VehiclePurchaseController {
         this.vehiclePurchaseService = vehiclePurchaseService;
     }
 
-
     // ✅ Create Vehicle Purchase
-    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<VehiclePurchaseDTO> create(
             @Valid @RequestBody VehiclePurchaseDTO dto)
     {
@@ -61,8 +60,8 @@ public class VehiclePurchaseController {
     }
 
     // ✅ Delete Record
-    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> deletePurchase(@PathVariable Long id) {
         vehiclePurchaseService.deleteById(id);
         return ResponseEntity.noContent().build();

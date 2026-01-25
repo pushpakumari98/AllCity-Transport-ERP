@@ -42,36 +42,55 @@ public class SecurityFilter {
 
                 .authorizeHttpRequests(auth -> auth
 
-                        // ✅ PUBLIC AUTH ENDPOINTS
+                        // 🔓 PUBLIC
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/images/**").permitAll()
 
-                        // ✅ ADMIN ONLY (CREATE / UPDATE)
+                        // 🔓 READ (GET only)
                         .requestMatchers(
-                                "/api/vehicle-purchases/**",
-                                "/api/admin/**"
+                                org.springframework.http.HttpMethod.GET,
+                                "/api/vehicle-purchases/**"
+                        ).permitAll()
+
+                        // 🔐 ADMIN ONLY (WRITE)
+                        .requestMatchers(
+                                org.springframework.http.HttpMethod.POST,
+                                "/api/vehicle-purchases/**"
                         ).hasAuthority("ADMIN")
 
-                        // ✅ AUTHENTICATED USERS (READ)
+                        .requestMatchers(
+                                org.springframework.http.HttpMethod.PUT,
+                                "/api/vehicle-purchases/**"
+                        ).hasAuthority("ADMIN")
+
+                        .requestMatchers(
+                                org.springframework.http.HttpMethod.DELETE,
+                                "/api/vehicle-purchases/**"
+                        ).hasAuthority("ADMIN")
+
+                        // 🔐 ADMIN APIs
+                        .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
+
+                        // 🔐 AUTHENTICATED USERS
                         .requestMatchers(
                                 "/api/bookings/**",
                                 "/api/vehicles/**"
                         ).authenticated()
 
                         // ✅ CORS PREFLIGHT
-                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers(
+                                org.springframework.http.HttpMethod.OPTIONS,
+                                "/**"
+                        ).permitAll()
 
-                        // ❌ EVERYTHING ELSE
                         .anyRequest().authenticated()
                 )
 
-                // ✅ JWT FILTER
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
 
-                // ✅ PROPER ERROR HANDLING
                 .exceptionHandling(ex -> ex
-                        .accessDeniedHandler(accessDeniedHandler)       // 403
-                        .authenticationEntryPoint(authenticationEntryPoint) // 401
+                        .accessDeniedHandler(accessDeniedHandler)
+                        .authenticationEntryPoint(authenticationEntryPoint)
                 );
 
         return http.build();
