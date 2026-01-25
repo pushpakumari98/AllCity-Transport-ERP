@@ -23,7 +23,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
-
 public class SecurityFilter {
 
     private final AuthFilter authFilter;
@@ -34,41 +33,46 @@ public class SecurityFilter {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-//                .csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults())   // ✅ ENABLE CORS
-                .csrf(csrf -> csrf.disable())
+                .cors(Customizer.withDefaults())
+                .csrf(AbstractHttpConfigurer::disable)
+
                 .sessionManagement(sess ->
                         sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
 
                 .authorizeHttpRequests(auth -> auth
 
-                        // CORS
+                        // ✅ PUBLIC AUTH ENDPOINTS
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/bookings/**",
-                                "/api/vehicles/**",
-                                "/api/admin/**",
-                                 "/api/events/create**",
-                                 "/api/vehicle-purchases/**",
-                                 "/images/**"
+                        .requestMatchers("/images/**").permitAll()
 
-                ).permitAll()
+                        // ✅ ADMIN ONLY (CREATE / UPDATE)
+                        .requestMatchers(
+                                "/api/vehicle-purchases/**",
+                                "/api/admin/**"
+                        ).hasAuthority("ADMIN")
 
+                        // ✅ AUTHENTICATED USERS (READ)
+                        .requestMatchers(
+                                "/api/bookings/**",
+                                "/api/vehicles/**"
+                        ).authenticated()
+
+                        // ✅ CORS PREFLIGHT
                         .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
 
-                        // EVERYTHING ELSE AUTHENTICATED
+                        // ❌ EVERYTHING ELSE
                         .anyRequest().authenticated()
                 )
 
-                // JWT FILTER
+                // ✅ JWT FILTER
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
 
-                // EXCEPTION HANDLING
+                // ✅ PROPER ERROR HANDLING
                 .exceptionHandling(ex -> ex
-                        .accessDeniedHandler(accessDeniedHandler)
-                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler)       // 403
+                        .authenticationEntryPoint(authenticationEntryPoint) // 401
                 );
-
 
         return http.build();
     }
@@ -77,9 +81,11 @@ public class SecurityFilter {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    // ✅ IMPORTANT: You REMOVED ROLE_ PREFIX
     @Bean
     public GrantedAuthorityDefaults grantedAuthorityDefaults() {
-        return new GrantedAuthorityDefaults(""); // REMOVE "ROLE_" PREFIX
+        return new GrantedAuthorityDefaults("");
     }
 
     @Bean
