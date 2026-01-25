@@ -31,7 +31,20 @@ public class AuthFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
-        // ✅ 1. ALLOW CORS PREFLIGHT (MOST IMPORTANT)
+        String path = request.getRequestURI();
+
+        // ✅ SKIP JWT FILTER FOR PUBLIC APIs
+        if (path.startsWith("/api/auth/")
+                || path.startsWith("/api/vehicle-purchases/")
+                || path.startsWith("/api/vehicles/")
+                || path.startsWith("/api/bookings/")
+                || path.startsWith("/images/")) {
+
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        // ✅ ALLOW CORS PREFLIGHT
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
             filterChain.doFilter(request, response);
@@ -39,7 +52,7 @@ public class AuthFilter extends OncePerRequestFilter {
         }
 
         try {
-            // ✅ 2. READ TOKEN
+            // ✅ READ TOKEN
             String token = getTokenFromRequest(request);
 
             if (token != null) {
@@ -52,6 +65,7 @@ public class AuthFilter extends OncePerRequestFilter {
                             customUserDetailsService.loadUserByUsername(email);
 
                     if (jwtUtils.isTokenValid(token, userDetails)) {
+
                         UsernamePasswordAuthenticationToken authenticationToken =
                                 new UsernamePasswordAuthenticationToken(
                                         userDetails,
