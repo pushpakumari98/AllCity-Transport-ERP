@@ -21,15 +21,15 @@ public class VehiclePurchaseDTO {
     private String transportName;
     private String detain;
 
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
 
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate bookingReceivingBalanceDate;
 
-    @JsonFormat(pattern = "dd-MM-yyyy")
-    private LocalDate podReceivedDate;
+   @JsonFormat(pattern = "yyyy-MM-dd")
+   private LocalDate podReceivedDate;
 
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate lorryBalancePaidDate;
 }
