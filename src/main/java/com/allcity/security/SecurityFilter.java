@@ -50,10 +50,10 @@ public class SecurityFilter {
                                 "/api/admin/**",
                                  "/api/events/create**",
                                  "/api/vehicle-purchases/**",
-                                 "/api/**",
                                  "/images/**"
 
                 ).permitAll()
+
                         .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
 
                         // EVERYTHING ELSE AUTHENTICATED
