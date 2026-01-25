@@ -1,6 +1,5 @@
 package com.allcity.entities;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -19,6 +18,11 @@ public class VehiclePurchase {
     @Column(name = "sl_no")
     private Long id;
 
+    // Date
+    @Column(name = "entry_date")
+    private LocalDate date;
+
+
     @Column(name="vehicle_no")
     @Pattern(
             regexp = "^[A-Z]{2}[0-9]{2}[A-Z]{2}[0-9]{4}$",
@@ -27,9 +31,16 @@ public class VehiclePurchase {
     @Size(min = 9, max = 13, message = "Vehicle number must be 9 to 13 characters")
     private String vehicleNo;
 
+
+
     // Booking Hire
     @Column(name = "booking_hire")
     private Double bookingHire;
+
+
+    // Booking Receiving Balance Date
+    @Column(name = "booking_receiving_balance_date")
+    private LocalDate bookingReceivingBalanceDate;
 
     // From Location
     @Column(name = "from_location")
@@ -45,23 +56,14 @@ public class VehiclePurchase {
 
     // Detain Amount
     @Column(name = "detain")
-    private String detain;
+    private Double detain;
 
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern ="yyyy-MM-dd")
-    @Column(name = "entry_date")
-    private LocalDate date;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    @Column(name = "booking_receiving_balance_date")
-    private LocalDate bookingReceivingBalanceDate;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern ="yyyy-MM-dd")
+    // POD Received Date
     @Column(name = "pod_received_date")
     private LocalDate podReceivedDate;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-
+    // Lorry Balance Paid Date
     @Column(name = "lorry_balance_paid_date")
     private LocalDate lorryBalancePaidDate;
 }
