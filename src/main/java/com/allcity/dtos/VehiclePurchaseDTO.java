@@ -19,7 +19,7 @@ public class VehiclePurchaseDTO {
     private String fromLocation;
     private String toLocation;
     private String transportName;
-    private String detain;
+    private Double detain;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;

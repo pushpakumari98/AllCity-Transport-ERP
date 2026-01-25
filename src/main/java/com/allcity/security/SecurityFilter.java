@@ -49,6 +49,7 @@ public class SecurityFilter {
                                 "/api/vehicles/**",
                                 "/api/admin/**",
                                  "/api/events/create**",
+                                 "/api/vehicle-purchases/**",
                                  "/api/**",
                                  "/images/**"
 
