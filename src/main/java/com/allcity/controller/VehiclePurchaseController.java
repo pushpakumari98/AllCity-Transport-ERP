@@ -51,13 +51,15 @@ public class VehiclePurchaseController {
 
 
     // ✅ UPDATE
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<VehiclePurchaseDTO> updatePurchase(
             @PathVariable Long id,
-            @RequestBody VehiclePurchaseDTO dto) {
+            @Valid @RequestBody VehiclePurchaseDTO dto) {
 
         return ResponseEntity.ok(vehiclePurchaseService.update(id, dto));
     }
+
 
     // ✅ Delete Record
     @DeleteMapping("/{id}")
