@@ -33,11 +33,10 @@ public class AuthFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
 
-        // ✅ SKIP JWT FILTER FOR PUBLIC APIs
+       //  ✅ SKIP JWT FILTER FOR PUBLIC APIs
         if (path.startsWith("/api/auth/")
-                || path.startsWith("/api/vehicle-purchases/")
-                || path.startsWith("/api/vehicles/")
-                || path.startsWith("/api/bookings/")
+//                || path.startsWith("/api/vehicles/")
+//                || path.startsWith("/api/bookings/")
                 || path.startsWith("/images/")) {
 
             filterChain.doFilter(request, response);
