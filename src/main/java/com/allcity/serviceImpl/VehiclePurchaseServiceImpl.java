@@ -5,6 +5,7 @@ import com.allcity.entities.VehiclePurchase;
 import com.allcity.repositories.VehiclePurchaseRepository;
 
 import com.allcity.service.VehiclePurchaseService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -85,9 +86,15 @@ public class VehiclePurchaseServiceImpl implements VehiclePurchaseService {
 
 
 
+    @Transactional
     @Override
     public void deleteById(Long id) {
-        repo.deleteById(id);
+
+        VehiclePurchase purchase = repo.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("VehiclePurchase not found with ID: " + id));
+
+        repo.delete(purchase);
     }
 
 
