@@ -1,6 +1,7 @@
 package com.allcity.service;
 
 import com.allcity.entities.Driver;
+import org.springframework.data.jpa.repository.Query;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -22,4 +23,5 @@ public interface DriverService {
     List<Driver> getByCarryMaterialType(String carryMaterialType);
 
     List<Driver> getByVehicleNumber(String vehicleNo);
+
 }

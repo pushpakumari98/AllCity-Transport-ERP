@@ -2,6 +2,7 @@ package com.allcity.repositories;
 
 import com.allcity.entities.Driver;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigInteger;
@@ -17,4 +18,6 @@ public interface DriverRepository extends JpaRepository<Driver, Long> {
     List<Driver> findByCarryMaterialType(String carryMaterialType);
 
     List<Driver> findByVehicleNo(String vehicleNo);
+    @Query("SELECT MAX(d.serialNo) FROM Driver d")
+    Long findMaxSerialNo();
 }

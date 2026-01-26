@@ -1,60 +1,51 @@
 package com.allcity.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigInteger;
 import java.time.LocalDate;
 
 @Entity
+@Table(name = "tbl_driver")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "tbl_driver")
 public class Driver {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // ✅ Auto-generated, immutable
-    @Column(name = "serial_no", nullable = false, unique = true, updatable = false)
+    @Column(name = "serial_no", unique = true, updatable = false)
     private Long serialNo;
 
-    // ✅ Numeric vehicle number ONLY
     @Column(name = "vehicle_no", nullable = false)
-    @NotBlank(message = "Vehicle number is required")
-    @Pattern(
-            regexp = "^[A-Z]{2}[0-9]{1,2}[A-Z]{1,2}[0-9]{4}$"
-    )
     private String vehicleNo;
 
-    @Column(name = "driver_name")
+    @Column(name = "driver_name", nullable = false)
     private String driverName;
 
-    @Column(name = "contact_number")
+    @Column(name = "contact_number", nullable = false)
     private String contactNumber;
 
-    @NotBlank(message = "vehicle starting place is required")
+    @Column(name = "started_from", nullable = false)
     private String startedFrom;
 
-    @NotBlank(message = "destination")
+    @Column(name = "destination", nullable = false)
     private String destination;
 
-    @NotBlank(message = "material type is required")
+    @Column(name = "carry_material_type", nullable = false)
     private String carryMaterialType;
 
-    @NotBlank(message = "date is required")
+    @Column(name = "date", nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
 
-    @NotBlank(message = "address is required")
+    @Column(name = "address", nullable = false)
     private String address;
-
-    // getters and setters
 }

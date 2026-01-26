@@ -18,8 +18,16 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public Driver saveDriver(Driver driver) {
+
+        Long lastSerial = driverRepository.findMaxSerialNo();
+        driver.setSerialNo(lastSerial == null ? 1 : lastSerial + 1);
+        if (driver.getVehicleNo() != null && !driver.getVehicleNo().isBlank()) {
+            driver.setVehicleNo(driver.getVehicleNo().toUpperCase());
+        }
+
         return driverRepository.save(driver);
     }
+
 
     @Override
     public Driver updateDriver(Long id, Driver driver) {
@@ -73,4 +81,6 @@ public class DriverServiceImpl implements DriverService {
     public List<Driver> getByVehicleNumber(String vehicleNo) {
         return driverRepository.findByVehicleNo(vehicleNo);
     }
+
+
 }

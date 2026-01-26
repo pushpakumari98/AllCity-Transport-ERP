@@ -1,5 +1,6 @@
 package com.allcity.controller;
 
+import com.allcity.dtos.DriverDTO;
 import com.allcity.entities.Driver;
 import com.allcity.service.DriverService;
 import jakarta.validation.Valid;
@@ -22,18 +23,46 @@ public class DriverController {
 
     // ✅ CREATE DRIVER
     @PostMapping
-    public ResponseEntity<Driver> createDriver(@Valid @RequestBody Driver driver) {
+    public ResponseEntity<Driver> createDriver(
+            @Valid @RequestBody DriverDTO driverDTO)
+    {
+    Driver driver = Driver.builder()
+                .vehicleNo(driverDTO.getVehicleNo())
+                .driverName(driverDTO.getDriverName())
+                .contactNumber(driverDTO.getContactNumber())
+                .startedFrom(driverDTO.getStartedFrom())
+                .destination(driverDTO.getDestination())
+                .carryMaterialType(driverDTO.getCarryMaterialType())
+                .date(driverDTO.getDate())
+                .address(driverDTO.getAddress())
+                .build();
+
         return ResponseEntity.ok(driverService.saveDriver(driver));
     }
+
+
+
 
     // ✅ UPDATE DRIVER
     @PutMapping("/{id}")
     public ResponseEntity<Driver> updateDriver(
             @PathVariable Long id,
-            @Valid @RequestBody Driver driver) {
+            @Valid @RequestBody DriverDTO driverDTO) {
+
+        Driver driver = Driver.builder()
+                .vehicleNo(driverDTO.getVehicleNo().toUpperCase())
+                .driverName(driverDTO.getDriverName())
+                .contactNumber(driverDTO.getContactNumber())
+                .startedFrom(driverDTO.getStartedFrom())
+                .destination(driverDTO.getDestination())
+                .carryMaterialType(driverDTO.getCarryMaterialType())
+                .date(driverDTO.getDate())
+                .address(driverDTO.getAddress())
+                .build();
 
         return ResponseEntity.ok(driverService.updateDriver(id, driver));
     }
+
 
     // ✅ GET DRIVER BY ID
     @GetMapping("/{id}")

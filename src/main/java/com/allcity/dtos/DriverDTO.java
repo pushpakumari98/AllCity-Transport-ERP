@@ -1,5 +1,7 @@
 package com.allcity.dtos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -18,8 +20,9 @@ import java.time.LocalDate;
 @Builder
 public class DriverDTO {
 
-    @NotNull
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+
+    @NotNull(message = "Date cannot be null")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate date;
 
     @NotBlank(message = "vehicle_No is required")
@@ -31,8 +34,8 @@ public class DriverDTO {
     @NotBlank(message = "destination is required")
     private String destination;
 
-
-    @NotBlank(message = "Contact number is required")
+    @NotBlank
+    @Pattern(regexp = "^[0-9]{10}$")
     private String contactNumber;
 
     @NotBlank(message = "address is required")

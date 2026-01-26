@@ -42,17 +42,25 @@ public class SecurityFilter {
 
                 .authorizeHttpRequests(auth -> auth
 
-                        // 🔓 PUBLIC
+                        // ✅ ALLOW CORS PREFLIGHT FIRST
+                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+
+                        // 🔓 PUBLIC AUTH
                         .requestMatchers("/api/auth/**").permitAll()
+
+                        // 🔓 DRIVER APIs (FIX 🔥)
+                        .requestMatchers("/api/drivers/**").permitAll()
+
+                        // 🔓 IMAGES
                         .requestMatchers("/images/**").permitAll()
 
-                        // 🔓 READ (GET only)
+                        // 🔓 READ ONLY
                         .requestMatchers(
                                 org.springframework.http.HttpMethod.GET,
                                 "/api/vehicle-purchases/**"
                         ).permitAll()
 
-                        // 🔐 ADMIN ONLY (WRITE)
+                        // 🔐 ADMIN WRITE
                         .requestMatchers(
                                 org.springframework.http.HttpMethod.POST,
                                 "/api/vehicle-purchases/**"
@@ -68,20 +76,15 @@ public class SecurityFilter {
                                 "/api/vehicle-purchases/**"
                         ).hasAuthority("ADMIN")
 
-                        // 🔐 ADMIN APIs
+                        // 🔐 ADMIN
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
 
-                        // 🔐 AUTHENTICATED USERS
+                        // 🔐 AUTHENTICATED
                         .requestMatchers(
                                 "/api/bookings/**",
-                                "/api/vehicles/**"
+                                "/api/vehicles/**",
+                                "/api/drivers/**"
                         ).authenticated()
-
-                        // ✅ CORS PREFLIGHT
-                        .requestMatchers(
-                                org.springframework.http.HttpMethod.OPTIONS,
-                                "/**"
-                        ).permitAll()
 
                         .anyRequest().authenticated()
                 )
