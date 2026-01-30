@@ -4,6 +4,7 @@ import com.allcity.dtos.VehicleBookingDTO;
 import com.allcity.entities.VehicleBooking;
 import com.allcity.enums.BookingStatus;
 import com.allcity.service.VehicleBookingService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class VehicleBookingController {
     // ✅ Create new booking
     @PostMapping("/bookvehicle")
     public ResponseEntity<VehicleBooking> addBooking(
-            @RequestBody VehicleBookingDTO dto) {
+            @Valid @RequestBody VehicleBookingDTO dto) {
         return ResponseEntity.ok(vehicleBookingService.addBooking(dto));
     }
 

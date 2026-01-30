@@ -1,4 +1,5 @@
 package com.allcity.serviceImpl;
+import com.allcity.dtos.VehicleSaleDTO;
 import com.allcity.entities.VehicleSale;
 import com.allcity.enums.PaymentMode;
 import com.allcity.repositories.VehicleSaleRepository;
@@ -21,33 +22,30 @@ public class VehicleSaleServiceImpl implements VehicleSaleService {
      * Add a new vehicle sale
      */
     @Override
-    public VehicleSale addVehicleSale(VehicleSale dto, MultipartFile document) throws IOException {
+    public VehicleSale addVehicleSale(VehicleSaleDTO dto, MultipartFile document) throws IOException {
 
-        // Validate and get vehicle reference
-
-        // Convert DTO → Entity
         VehicleSale sale = VehicleSale.builder()
-                .vehicleId(dto.getVehicleId())
-                .date(dto.getDate() != null ? dto.getDate() : LocalDate.now())
+
+                .date(dto.getDate() != null ? dto.getDate() : LocalDate.now()) // ensures date is today if null
                 .lorryNumber(dto.getLorryNumber())
-                .weight(dto.getWeight())
-                .lorryHire(dto.getLorryHire())
-                .commission(dto.getCommission())
-                .bility(dto.getBility())
+                .weight(dto.getWeight() != null ? dto.getWeight().intValue() : 0)
+                .lorryHire(dto.getLorryHire() != null ? dto.getLorryHire().intValue() : 0)
+                .commission(dto.getCommission() != null ? dto.getCommission().intValue() : 0)
+                .bility(dto.getBility() != null ? dto.getBility().intValue() : 0)
                 .paymentMode(dto.getPaymentMode())
                 .petrolPump(dto.getPetrolPump())
-                .totalAdvance(dto.getTotalAdvance())
+                .totalAdvance(dto.getTotalAdvance() != null ? dto.getTotalAdvance().intValue() : 0)
                 .build();
 
-        // If a document file is provided, you can store its name/path (optional)
+        // Save document if exists
         if (document != null && !document.isEmpty()) {
             String fileName = document.getOriginalFilename();
-            // TODO: Save file to disk or database
-            // Example: Files.copy(document.getInputStream(), Paths.get("uploads/" + fileName));
+            // TODO: save file
         }
 
         return vehicleSaleRepository.save(sale);
     }
+
 
 
     /**
@@ -134,4 +132,38 @@ public class VehicleSaleServiceImpl implements VehicleSaleService {
         }
         return vehicleSaleRepository.save(sale);
     }
+
+
+    @Override
+    public List<VehicleSale> getSalesByFilter(String filter) {
+
+        LocalDate today = LocalDate.now();
+
+        return switch (filter.toLowerCase()) {
+
+            case "today" -> vehicleSaleRepository.findByDate(today);  // exact today
+
+            case "week" -> {
+                LocalDate start = today.with(java.time.DayOfWeek.MONDAY);
+                LocalDate end = today.with(java.time.DayOfWeek.SUNDAY);
+                yield vehicleSaleRepository.findByDateBetween(start, end);
+            }
+
+            case "month" -> {
+                LocalDate start = today.withDayOfMonth(1);
+                LocalDate end = today.withDayOfMonth(today.lengthOfMonth());
+                yield vehicleSaleRepository.findByDateBetween(start, end);
+            }
+
+            case "year" -> {
+                LocalDate start = today.withDayOfYear(1);
+                LocalDate end = today.withDayOfYear(today.lengthOfYear());
+                yield vehicleSaleRepository.findByDateBetween(start, end);
+            }
+
+            default -> vehicleSaleRepository.findAll();
+        };
+    }
+
+
 }

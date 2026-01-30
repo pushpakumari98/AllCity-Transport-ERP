@@ -23,8 +23,23 @@ public class VehicleSale {
 
     @Column(name = "vehicle_id", nullable = false, unique = true, updatable = false)
     private String vehicleId;
+
+    @NotNull
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Column(name = "date", nullable = false)
+    private LocalDate date;
+
+
+
     @PrePersist
-    public void generateVehicleId() {
+    public void prePersist() {
+
+        // set date if not provided
+        if (this.date == null) {
+            this.date = LocalDate.now();
+        }
+
+        // generate vehicleId if not provided
         if (this.vehicleId == null) {
             this.vehicleId = "VH-" + UUID.randomUUID()
                     .toString()
@@ -33,9 +48,7 @@ public class VehicleSale {
         }
     }
 
-    @NotNull
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate date;
+
 
     @Column(name = "lorry_number", nullable = false)
     private String lorryNumber;

@@ -1,5 +1,6 @@
 package com.allcity.controller;
 
+import com.allcity.dtos.VehicleSaleDTO;
 import com.allcity.entities.VehicleSale;
 import com.allcity.service.VehicleSaleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,14 +24,16 @@ public class VehicleSaleController {
     /**
      * Add new Vehicle Sale
      */
-    @PostMapping("/vehicle-sales")
+
+
+    @PostMapping(value = "/vehicle-sales", consumes = "multipart/form-data")
     public ResponseEntity<VehicleSale> addVehicleSale(
-            @RequestBody VehicleSale dto,
-            @RequestParam(value = "document", required = false) MultipartFile document
+            @RequestPart("data") VehicleSaleDTO dto,
+            @RequestPart(value = "document", required = false) MultipartFile document
     ) throws IOException {
-        VehicleSale savedSale = vehicleSaleService.addVehicleSale(dto, document);
-        return ResponseEntity.ok(savedSale);
+        return ResponseEntity.ok(vehicleSaleService.addVehicleSale(dto, document));
     }
+
 
     /**
      * Update Vehicle Sale by ID
@@ -96,4 +99,13 @@ public class VehicleSaleController {
         VehicleSale updatedSale = vehicleSaleService.uploadSaleDocument(id, file);
         return ResponseEntity.ok(updatedSale);
     }
+
+
+    @GetMapping("/vehicle-sales")
+    public ResponseEntity<List<VehicleSale>> getSalesByFilter(
+            @RequestParam(defaultValue = "all") String filter) {
+
+        return ResponseEntity.ok(vehicleSaleService.getSalesByFilter(filter));
+    }
+
 }

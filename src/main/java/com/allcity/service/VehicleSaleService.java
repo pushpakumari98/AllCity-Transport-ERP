@@ -10,7 +10,14 @@ import java.util.List;
 @Service
 public interface VehicleSaleService {
 
-    VehicleSale addVehicleSale(VehicleSale dto, MultipartFile document) throws IOException;
+
+
+    public VehicleSale addVehicleSale(VehicleSaleDTO dto, MultipartFile document) throws IOException;
+
+
+    /*
+     * Add a new vehicle sale
+     */
 
     VehicleSale updateVehicleSale(Long id, VehicleSale dto);
 
@@ -28,4 +35,6 @@ public interface VehicleSaleService {
     void deleteVehicleSale(Long id);
 
     VehicleSale uploadSaleDocument(Long id, MultipartFile file) throws IOException;
+
+    List<VehicleSale> getSalesByFilter(String filter);
 }
