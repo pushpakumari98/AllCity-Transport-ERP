@@ -63,6 +63,9 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public void deleteDriver(Long id) {
+        if (!driverRepository.existsById(id)) {
+            throw new RuntimeException("Driver not found with ID: " + id);
+        }
         driverRepository.deleteById(id);
     }
 
