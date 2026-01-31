@@ -26,7 +26,8 @@ public class VehicleSaleServiceImpl implements VehicleSaleService {
 
         VehicleSale sale = VehicleSale.builder()
 
-                .date(dto.getDate() != null ? dto.getDate() : LocalDate.now()) // ensures date is today if null
+                .date(dto.getDate() != null ? dto.getDate() : LocalDate.now())
+// ensures date is today if null
                 .lorryNumber(dto.getLorryNumber())
                 .weight(dto.getWeight() != null ? dto.getWeight().intValue() : 0)
                 .lorryHire(dto.getLorryHire() != null ? dto.getLorryHire().intValue() : 0)

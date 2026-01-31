@@ -5,6 +5,7 @@ import com.allcity.exceptions.CustomAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -39,47 +40,34 @@ public class SecurityFilter {
                 .sessionManagement(sess ->
                         sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-
                 .authorizeHttpRequests(auth -> auth
 
-                        // ✅ ALLOW CORS PREFLIGHT FIRST
-                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+                        // ✅ CORS
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                        // 🔓 PUBLIC AUTH
-                        .requestMatchers("/api/auth/**").permitAll()
+                        // 🔓 PUBLIC
+                        .requestMatchers("/api/auth/**", "/images/**").permitAll()
 
-                        // 🔓 DRIVER APIs (FIX 🔥)
-                        .requestMatchers("/api/drivers/**").permitAll()
+                        // 🔓 PUBLIC READ
+                        .requestMatchers(HttpMethod.GET, "/api/vehicle-purchases/**").permitAll()
 
-                        // 🔓 IMAGES
-                        .requestMatchers("/images/**").permitAll()
+                        // 🔐 ADMIN ONLY (WRITE)
+                        .requestMatchers(HttpMethod.POST, "/api/vehicle-purchases/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/vehicle-purchases/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/vehicle-purchases/**").hasAuthority("ADMIN")
 
-                        // 🔓 READ ONLY
-                        .requestMatchers(
-                                org.springframework.http.HttpMethod.GET,
-                                "/api/vehicle-purchases/**"
-                        ).permitAll()
-
-                        // 🔐 ADMIN WRITE
-                        .requestMatchers(
-                                org.springframework.http.HttpMethod.POST,
-                                "/api/vehicle-purchases/**"
-                        ).hasAuthority("ADMIN")
-
-                        .requestMatchers(
-                                org.springframework.http.HttpMethod.PUT,
-                                "/api/vehicle-purchases/**"
-                        ).hasAuthority("ADMIN")
-
-                        .requestMatchers(
-                                org.springframework.http.HttpMethod.DELETE,
-                                "/api/vehicle-purchases/**"
-                        ).hasAuthority("ADMIN")
-
-                        // 🔐 ADMIN
+                        // 🔐 ADMIN APIs
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
 
-                        // 🔐 AUTHENTICATED
+                        // 🔐 MANAGER + ADMIN
+                        .requestMatchers("/api/manager/**")
+                        .hasAnyAuthority("MANAGER", "ADMIN")
+
+                        // 🔐 USER + MANAGER + ADMIN
+                        .requestMatchers("/api/user/**")
+                        .hasAnyAuthority("USER", "MANAGER", "ADMIN")
+
+                        // 🔐 AUTHENTICATED (ANY ROLE)
                         .requestMatchers(
                                 "/api/bookings/**",
                                 "/api/vehicles/**",

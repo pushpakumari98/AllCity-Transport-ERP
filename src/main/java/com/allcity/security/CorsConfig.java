@@ -1,13 +1,12 @@
-
 package com.allcity.security;
 
-        import org.springframework.context.annotation.Bean;
-        import org.springframework.context.annotation.Configuration;
-        import org.springframework.web.cors.CorsConfiguration;
-        import org.springframework.web.cors.CorsConfigurationSource;
-        import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-        import java.util.List;
+import java.util.List;
 
 @Configuration
 public class CorsConfig {
@@ -17,13 +16,13 @@ public class CorsConfig {
 
         CorsConfiguration config = new CorsConfiguration();
 
-        // ✅ FIX 1: Use allowedOriginPatterns (NOT allowedOrigins)
+        // ✅ Frontend URLs (dev + prod)
         config.setAllowedOriginPatterns(List.of(
                 "http://localhost:59753",
                 "https://allcity-transport-erp-frontend.onrender.com"
         ));
 
-        // ✅ FIX 2: Explicitly allow headers used by JWT
+        // ✅ Headers required for JWT
         config.setAllowedHeaders(List.of(
                 "Authorization",
                 "Content-Type",
@@ -32,7 +31,7 @@ public class CorsConfig {
                 "X-Requested-With"
         ));
 
-        // ✅ FIX 3: Expose Authorization header to browser
+        // ✅ Allow browser to read Authorization header
         config.setExposedHeaders(List.of("Authorization"));
 
         // ✅ HTTP methods
@@ -44,10 +43,10 @@ public class CorsConfig {
                 "OPTIONS"
         ));
 
-        // ✅ REQUIRED when using JWT + frontend
+        // ✅ Mandatory for Angular + JWT
         config.setAllowCredentials(true);
 
-        // ⏱ Optional but recommended
+        // ⏱ Cache preflight response
         config.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source =
@@ -57,8 +56,3 @@ public class CorsConfig {
         return source;
     }
 }
-
-
-
-
-

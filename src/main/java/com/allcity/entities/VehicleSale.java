@@ -21,13 +21,16 @@ public class VehicleSale {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "vehicle_id", nullable = false, unique = true, updatable = false)
+
+    @Column(name = "vehicle_id", nullable = false, unique = true)
     private String vehicleId;
+
 
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "date", nullable = false)
     private LocalDate date;
+
 
 
 

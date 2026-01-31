@@ -28,6 +28,7 @@ public class VehicleSaleDTO {
     @DecimalMin(value = "0.0", inclusive = false, message = "Weight must be greater than 0")
     private Double weight;
 
+
     @DecimalMin(value = "0.0", inclusive = false, message = "Lorry hire must be greater than 0")
     private BigDecimal lorryHire;
 

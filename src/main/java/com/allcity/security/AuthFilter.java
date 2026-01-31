@@ -7,14 +7,15 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 @Component
 @Slf4j
@@ -22,7 +23,6 @@ import java.io.IOException;
 public class AuthFilter extends OncePerRequestFilter {
 
     private final JwtUtils jwtUtils;
-    private final CustomUserDetailsService customUserDetailsService;
 
     @Override
     protected void doFilterInternal(
@@ -33,68 +33,58 @@ public class AuthFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
 
-       //  ✅ SKIP JWT FILTER FOR PUBLIC APIs
+        // ✅ SKIP PUBLIC ENDPOINTS
         if (path.startsWith("/api/auth/")
-//                || path.startsWith("/api/vehicles/")
-//                || path.startsWith("/api/bookings/")
-                || path.startsWith("/images/")) {
+                || path.startsWith("/images/")
+                || "OPTIONS".equalsIgnoreCase(request.getMethod())) {
 
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        // ✅ ALLOW CORS PREFLIGHT
-        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-            response.setStatus(HttpServletResponse.SC_OK);
             filterChain.doFilter(request, response);
             return;
         }
 
         try {
-            // ✅ READ TOKEN
             String token = getTokenFromRequest(request);
 
-            if (token != null) {
+            if (token != null && !jwtUtils.isTokenExpired(token)
+                    && SecurityContextHolder.getContext().getAuthentication() == null) {
+
                 String email = jwtUtils.getUsernameFromToken(token);
+                List<String> roles = jwtUtils.getRolesFromToken(token);
 
-                if (StringUtils.hasText(email)
-                        && SecurityContextHolder.getContext().getAuthentication() == null) {
+                List<SimpleGrantedAuthority> authorities =
+                        roles.stream()
+                                .map(SimpleGrantedAuthority::new)
+                                .toList();
 
-                    UserDetails userDetails =
-                            customUserDetailsService.loadUserByUsername(email);
-
-                    if (jwtUtils.isTokenValid(token, userDetails)) {
-
-                        UsernamePasswordAuthenticationToken authenticationToken =
-                                new UsernamePasswordAuthenticationToken(
-                                        userDetails,
-                                        null,
-                                        userDetails.getAuthorities()
-                                );
-
-                        authenticationToken.setDetails(
-                                new WebAuthenticationDetailsSource().buildDetails(request)
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(
+                                email,
+                                null,
+                                authorities
                         );
 
-                        SecurityContextHolder.getContext()
-                                .setAuthentication(authenticationToken);
-                    }
-                }
+                authentication.setDetails(
+                        new WebAuthenticationDetailsSource()
+                                .buildDetails(request)
+                );
+
+                SecurityContextHolder.getContext()
+                        .setAuthentication(authentication);
             }
 
-            filterChain.doFilter(request, response);
-
         } catch (Exception ex) {
-            log.error("JWT Auth Filter error: {}", ex.getMessage());
-            filterChain.doFilter(request, response);
+            log.error("JWT authentication failed: {}", ex.getMessage());
         }
+
+        filterChain.doFilter(request, response);
     }
 
     private String getTokenFromRequest(HttpServletRequest request) {
-        String tokenWithBearer = request.getHeader("Authorization");
-        if (StringUtils.hasText(tokenWithBearer)
-                && tokenWithBearer.startsWith("Bearer ")) {
-            return tokenWithBearer.substring(7);
+        String bearerToken = request.getHeader("Authorization");
+
+        if (StringUtils.hasText(bearerToken)
+                && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
         }
         return null;
     }

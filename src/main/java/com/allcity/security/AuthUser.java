@@ -18,13 +18,11 @@ public class AuthUser implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        // ✅ NO ROLE_ PREFIX (matches GrantedAuthorityDefaults(""))
         return List.of(
-                new SimpleGrantedAuthority(user.getRole().name()) // ADMIN
+                new SimpleGrantedAuthority(user.getRole().name())
         );
     }
-
-
-
 
     @Override
     public String getPassword() {

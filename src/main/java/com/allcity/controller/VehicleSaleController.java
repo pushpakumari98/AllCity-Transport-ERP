@@ -5,6 +5,7 @@ import com.allcity.entities.VehicleSale;
 import com.allcity.service.VehicleSaleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,7 +27,7 @@ public class VehicleSaleController {
      */
 
 
-    @PostMapping(value = "/vehicle-sales", consumes = "multipart/form-data")
+    @PostMapping(value = "/vehicle-sales", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<VehicleSale> addVehicleSale(
             @RequestPart("data") VehicleSaleDTO dto,
             @RequestPart(value = "document", required = false) MultipartFile document
