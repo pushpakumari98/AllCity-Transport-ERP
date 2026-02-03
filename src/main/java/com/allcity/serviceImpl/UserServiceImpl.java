@@ -10,6 +10,7 @@ import com.allcity.exceptions.InvalidCredentialException;
 import com.allcity.exceptions.NotFoundException;
 import com.allcity.repositories.UserRepository;
 import com.allcity.repositories.VehicleBookingRepository;
+import com.allcity.security.CustomUserDetailsService;
 import com.allcity.security.JwtUtils;
 import com.allcity.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +35,8 @@ public class UserServiceImpl implements UserService {
     private final JwtUtils jwtUtils;
     private final ModelMapper modelMapper;
     private final VehicleBookingRepository vehicleBookingRepository;
+
+    private final CustomUserDetailsService customUserDetailsService;
 
 
 
@@ -95,31 +99,33 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
-
-
-
     @Override
     public Response loginUser(LoginRequest loginRequest) {
-       User user = userRepository.findByEmail(loginRequest.getEmail())
-               .orElseThrow(()-> new NotFoundException("Email Not Found"));
+
+        User user = userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new NotFoundException("Email Not Found"));
 
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             throw new InvalidCredentialException("Password doesn't match");
         }
 
-        String token = jwtUtils.generateToken(user.getEmail());
+        UserDetails userDetails =
+                customUserDetailsService.loadUserByUsername(user.getEmail());
+
+
+        String token = jwtUtils.generateToken(userDetails);
 
 
         return Response.builder()
                 .status(200)
-                .message("user logged in successfully")
+                .message("User logged in successfully")
                 .role(user.getRole())
                 .token(token)
                 .isActive(user.getIsActive())
                 .expirationTime("6 months")
                 .build();
     }
+
 
     @Override
     public Response getAllUsers() {

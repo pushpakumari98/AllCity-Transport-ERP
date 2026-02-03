@@ -43,13 +43,14 @@ public class JwtUtils {
                 .toList();
 
         return Jwts.builder()
-                .subject(userDetails.getUsername())
-                .claim("roles", roles)
+                .subject(userDetails.getUsername())   // email
+                .claim("roles", roles)                // ADMIN / MANAGER / USER
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(key)
                 .compact();
     }
+
 
     public String getUsernameFromToken(String token) {
         return extractClaims(token, Claims::getSubject);
