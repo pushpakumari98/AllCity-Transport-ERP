@@ -45,7 +45,4 @@ public class VehicleSaleDTO {
 
     @DecimalMin(value = "0.0", inclusive = true, message = "Total advance cannot be negative")
     private BigDecimal totalAdvance;
-
-    @NotNull(message = "Vehicle reference ID is required")
-    private Long vehicleRefId; // Refers to Vehicle entity (instead of Vehicle object)
 }

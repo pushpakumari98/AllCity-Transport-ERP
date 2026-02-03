@@ -3,6 +3,7 @@ package com.allcity.controller;
 import com.allcity.dtos.VehicleSaleDTO;
 import com.allcity.entities.VehicleSale;
 import com.allcity.service.VehicleSaleService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
@@ -28,7 +29,7 @@ public class VehicleSaleController {
 
 
     @PostMapping(value = "/vehicle-sales", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<VehicleSale> addVehicleSale(
+    public ResponseEntity<VehicleSale> addVehicleSale(@Valid
             @RequestPart("data") VehicleSaleDTO dto,
             @RequestPart(value = "document", required = false) MultipartFile document
     ) throws IOException {

@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -58,15 +59,15 @@ public class VehicleSale {
 
     // weight in whole number
     @Column
-    private Integer weight;
+    private Double weight;
 
     // lorry hire in whole number
     @Column(name = "lorry_hire")
-    private Integer lorryHire;
+    private BigDecimal lorryHire;
 
     // commission in whole number
     @Column
-    private Integer commission;
+    private BigDecimal commission;
 
     // bility in whole number
     @Column(name="bility")
@@ -83,7 +84,4 @@ public class VehicleSale {
     @Column(name = "total_advance")
     private Integer totalAdvance;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "vehicle_ref_id", nullable = false)
-//    private Vehicle vehicle;
 }
