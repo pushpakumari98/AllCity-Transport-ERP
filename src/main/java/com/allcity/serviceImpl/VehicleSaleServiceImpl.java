@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -29,9 +30,9 @@ public class VehicleSaleServiceImpl implements VehicleSaleService {
                 .date(dto.getDate() != null ? dto.getDate() : LocalDate.now())
 // ensures date is today if null
                 .lorryNumber(dto.getLorryNumber())
-                .weight(dto.getWeight() != null ? dto.getWeight().intValue() : 0)
-                .lorryHire(dto.getLorryHire() != null ? dto.getLorryHire().intValue() : 0)
-                .commission(dto.getCommission() != null ? dto.getCommission().intValue() : 0)
+                .weight(dto.getWeight() != null ? dto.getWeight() : 0.0)
+                .lorryHire(dto.getLorryHire() != null ? dto.getLorryHire() : BigDecimal.ZERO)
+                .commission(dto.getCommission() != null ? dto.getCommission() : BigDecimal.ZERO)
                 .bility(dto.getBility() != null ? dto.getBility().intValue() : 0)
                 .paymentMode(dto.getPaymentMode())
                 .petrolPump(dto.getPetrolPump())
