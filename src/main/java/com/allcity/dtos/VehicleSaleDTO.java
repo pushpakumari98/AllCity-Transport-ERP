@@ -15,8 +15,6 @@ import java.time.LocalDate;
 public class VehicleSaleDTO {
 
     private Long id;
-    @NotBlank(message = "Vehicle ID is required")
-    private String vehicleId;
 
     @NotNull(message = "Date is required")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -35,8 +33,8 @@ public class VehicleSaleDTO {
     @DecimalMin(value = "0.0", inclusive = true, message = "Commission cannot be negative")
     private BigDecimal commission;
 
-    @DecimalMin(value = "0.0", inclusive = true, message = "Bility cannot be negative")
-    private BigDecimal bility;
+    @DecimalMin(value = "0", inclusive = true, message = "Bility cannot be negative")
+    private Integer bility;
 
     @NotNull(message = "Payment mode is required")
     private PaymentMode paymentMode; // Enum: UPI, IMPS
