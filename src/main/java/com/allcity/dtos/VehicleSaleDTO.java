@@ -1,6 +1,9 @@
 package com.allcity.dtos;
 
 import com.allcity.enums.PaymentMode;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -14,7 +17,15 @@ import java.time.LocalDate;
 @Builder
 public class VehicleSaleDTO {
 
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private Long vehicleRefId;
+
+    @NotBlank
+    private String vehicleId;
 
     @NotNull(message = "Date is required")
     @DateTimeFormat(pattern = "yyyy-MM-dd")

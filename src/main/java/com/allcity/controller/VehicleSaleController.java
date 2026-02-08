@@ -28,6 +28,7 @@ public class VehicleSaleController {
      */
 
 
+
     @PostMapping(value = "/vehicle-sales", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<VehicleSale> addVehicleSale(@Valid
             @RequestPart("data") VehicleSaleDTO dto,
