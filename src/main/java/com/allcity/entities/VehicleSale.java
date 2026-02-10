@@ -22,55 +22,33 @@ public class VehicleSale {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
-    @Column(name = "vehicle_id", nullable = false, unique = true)
+    /**
+     * Auto-generated Vehicle ID
+     * Example: VH-A3F9C2D1
+     */
+    @Column(name = "vehicle_id", nullable = false, unique = true, updatable = false)
     private String vehicleId;
-
 
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @Column(name = "date", nullable = false)
+    @Column(nullable = false)
     private LocalDate date;
-
-
-
-
-    @PrePersist
-    public void prePersist() {
-
-        // set date if not provided
-        if (this.date == null) {
-            this.date = LocalDate.now();
-        }
-
-        // generate vehicleId if not provided
-        if (this.vehicleId == null) {
-            this.vehicleId = "VH-" + UUID.randomUUID()
-                    .toString()
-                    .substring(0, 8)
-                    .toUpperCase();
-        }
-    }
-
-
 
     @Column(name = "lorry_number", nullable = false)
     private String lorryNumber;
 
-    // weight in whole number
-    @Column
+    @NotNull
+    @Column(nullable = false)
     private Double weight;
 
-    // lorry hire in whole number
-    @Column(name = "lorry_hire")
+    @NotNull
+    @Column(name = "lorry_hire", nullable = false)
     private BigDecimal lorryHire;
 
-    // commission in whole number
     @Column
     private BigDecimal commission;
 
-    // bility in whole number
-    @Column(name="bility")
+    @Column
     private Integer bility;
 
     @Enumerated(EnumType.STRING)
@@ -80,8 +58,27 @@ public class VehicleSale {
     @Column(name = "petrol_pump")
     private String petrolPump;
 
-    // total advance in whole number
     @Column(name = "total_advance")
     private Integer totalAdvance;
 
+    /**
+     * Auto-generate values before saving
+     */
+    @PrePersist
+    public void prePersist() {
+
+        // Auto set date
+        if (this.date == null) {
+            this.date = LocalDate.now();
+        }
+
+        // Auto generate vehicleId
+        if (this.vehicleId == null || this.vehicleId.isBlank()) {
+            this.vehicleId = "VH-" + UUID.randomUUID()
+                    .toString()
+                    .replace("-", "")
+                    .substring(0, 8)
+                    .toUpperCase();
+        }
+    }
 }
