@@ -73,7 +73,8 @@ public class SecurityFilter {
                                 "/api/vehicles/**",
                                 "/api/drivers/**"
                         ).authenticated()
-
+                        .requestMatchers(HttpMethod.POST, "/api/vehicle-sales/**")
+                        .hasAuthority("ADMIN")
                         .anyRequest().authenticated()
                 )
 
