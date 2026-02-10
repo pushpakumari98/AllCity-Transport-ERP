@@ -24,8 +24,6 @@ public class VehicleSaleDTO {
 
     private Long vehicleRefId;
 
-    @NotBlank
-    private String vehicleId;
 
     @NotNull(message = "Date is required")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
